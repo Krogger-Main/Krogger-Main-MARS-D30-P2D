@@ -1,0 +1,9 @@
+{
+	"name": "marsdev-mex",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a62b95c5-73e7-454f-b732-0621759376da",
+		"tenantId": "0bfae9e6-1702-4013-85ee-997e6328799d"
+	}
+}
