@@ -1,0 +1,144 @@
+trigger: none  # Manual trigger only
+
+parameters:
+  - name: SourceBranch
+    displayName: 'Branch with ADF Code'
+    type: string
+    default: 'Dev'
+    values:
+      - Dev
+      - QA
+      - Prod
+      - main
+
+  - name: EnvironmentTag
+    displayName: 'Target Environment'
+    type: string
+    default: 'Dev'
+    values:
+      - Dev
+      - QA
+      - Prod
+
+variables:
+  Subscription:       'c97e8c7c-17c9-4899-99b0-394f52300023'
+  ResourceGroupName:  'rg-adf-np-eu2-01'
+  DataFactoryName:    'adf-adf-np-eu2-01'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+# 1) Checkout pipeline repo
+- checkout: self
+  displayName: 'Checkout pipeline YAML'
+
+# 2) Clone GitHub ADF repo
+- script: |
+    echo "Cloning ADF GitHub repo branch: ${{ parameters.SourceBranch }}"
+    git clone --single-branch --branch ${{ parameters.SourceBranch }} https://$(github_pat)@github.com/Mars-Incorporated/etl-snacking-kinaxis-adf.git adf-src
+  displayName: 'Clone GitHub ADF repo'
+  env:
+    github_pat: $(github_pat)   # 👈 Make sure this is stored as a secret variable in your pipeline
+
+# 2b) Clone Script_DevOps branch to fetch Trigger-Script
+- script: |
+    echo "Cloning Script_DevOps branch for Triggers-Scripts"
+    git clone --single-branch --branch Scripts_DevOps https://$(github_pat)@github.com/Mars-Incorporated/etl-snacking-kinaxis-adf.git tools
+  displayName: 'Clone Script_DevOps branch'
+  env:
+    github_pat: $(github_pat)
+
+# 3) Debug: List contents
+- script: |
+    echo "=== Listing everything under $(Build.SourcesDirectory) ==="
+    ls -laR $(Build.SourcesDirectory)
+    echo "=== Listing everything under adf-src ==="
+    ls -laR adf-src
+  displayName: 'Debug: List repo contents'
+
+# 4) Install Node.js
+- task: UseNode@1
+  displayName: 'Install Node.js'
+  inputs:
+    version: '18.x'
+
+# 5) Install npm packages
+- task: Npm@1
+  displayName: 'Install npm packages'
+  inputs:
+    command: install
+    #workingDir: 'adf-src/DevOps-Code'
+    workingDir: 'adf-src'
+
+# 6) Validate ADF JSON structure
+- task: Npm@1
+  displayName: 'Validate ADF resources'
+  inputs:
+    command: custom
+    #workingDir: 'adf-src/DevOps-Code'
+    workingDir: 'adf-src'
+    customCommand: >
+      run build validate
+      $(Build.SourcesDirectory)/adf-src
+      /subscriptions/$(Subscription)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.DataFactory/factories/$(DataFactoryName)
+
+# 7) Export ADF as ARM templates
+- task: Npm@1
+  displayName: 'Export ARM templates'
+  inputs:
+    command: custom
+    #workingDir: 'adf-src/DevOps-Code'
+    workingDir: 'adf-src'
+    customCommand: >
+      run build export
+      $(Build.SourcesDirectory)/adf-src
+      /subscriptions/$(Subscription)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.DataFactory/factories/$(DataFactoryName)
+      "ArmTemplates"
+
+# 8) Tag build with environment
+- task: PowerShell@2
+  displayName: 'Tag Build with Environment'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $envTag = "${{ parameters.EnvironmentTag }}"
+      Write-Host "##vso[build.addbuildtag]$envTag"
+
+# 9) Debug exported files
+- script: |
+    echo "=== Export output ==="
+    #ls -R "adf-src/DevOps-Code/ArmTemplates" || echo "No files exported!"
+    ls -R "adf-src/ArmTemplates" || echo "No files exported!"
+  displayName: 'List exported ARM templates'
+
+# 10) Stage exported templates for publish
+- task: CopyFiles@2
+  displayName: 'Stage ARM templates for publish'
+  inputs:
+    #SourceFolder: 'adf-src/DevOps-Code/ArmTemplates'
+    SourceFolder: 'adf-src/ArmTemplates'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+# 10b) Copy Trigger-Script folder into staging directory
+- task: CopyFiles@2
+  displayName: 'Include Triggers-Scripts in artifact'
+  inputs:
+    SourceFolder: 'tools/Triggers-Scripts'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/Triggers-Scripts'
+
+# 11) Debug: list staging directory
+- script: |
+    echo "=== Staging directory contents ==="
+    ls -R "$(Build.ArtifactStagingDirectory)" || echo "Staging directory is empty!"
+  displayName: 'List staging directory'
+
+# 12) Publish as artifact
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish ARM Templates Artifact'
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName:  'ArmTemplates'
