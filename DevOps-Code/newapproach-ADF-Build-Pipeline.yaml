@@ -4,11 +4,11 @@ parameters:
   - name: SourceBranch
     displayName: 'Branch with ADF Code'
     type: string
-    default: 'Dev'
+    default: 'main'
     values:
-      - Dev
-      - QA
-      - Prod
+      - Collab-chn
+      - Collab-mex
+      - COMMON-CODE
       - main
 
   - name: EnvironmentTag
@@ -21,9 +21,9 @@ parameters:
       - Prod
 
 variables:
-  Subscription:       'c97e8c7c-17c9-4899-99b0-394f52300023'
-  ResourceGroupName:  'rg-adf-np-eu2-01'
-  DataFactoryName:    'adf-adf-np-eu2-01'
+  Subscription:       '34d11d2f-1b00-494c-8051-b967e1de63f4'
+  ResourceGroupName:  'MARS-D30'
+  DataFactoryName:    'marsdev-mex'
 
 pool:
   vmImage: 'ubuntu-latest'
