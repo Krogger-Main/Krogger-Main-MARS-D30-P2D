@@ -1,0 +1,12 @@
+{
+	"name": "marsdev-mex",
+	"properties": {
+		"globalParameters": {
+			"gblparamwaittime": {
+				"type": "int",
+				"value": 100
+			}
+		}
+	},
+	"location": "eastus"
+}
