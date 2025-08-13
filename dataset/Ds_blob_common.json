@@ -1,0 +1,24 @@
+{
+	"name": "Ds_blob_common",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Blob_Common",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "abc.txt",
+				"folderPath": "abc",
+				"container": "abc"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

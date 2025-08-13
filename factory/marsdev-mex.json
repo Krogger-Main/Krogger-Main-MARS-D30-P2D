@@ -1,0 +1,12 @@
+{
+	"name": "marsdev-mex",
+	"properties": {
+		"globalParameters": {
+			"gblparamcommon": {
+				"type": "string",
+				"value": "commonvalue"
+			}
+		}
+	},
+	"location": "eastus"
+}
