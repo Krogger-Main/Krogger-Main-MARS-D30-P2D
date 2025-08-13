@@ -1,0 +1,24 @@
+{
+	"name": "Ds_blob_china",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Blob_China",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "abc.txt",
+				"folderPath": "abc",
+				"container": "abc"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
