@@ -37,7 +37,7 @@ steps:
 # 2) Clone GitHub ADF repo
 - script: |
     echo "Cloning ADF GitHub repo branch: ${{ parameters.SourceBranch }}"
-    git clone --single-branch --branch ${{ parameters.SourceBranch }} https://$(github_pat)@github.com/Mars-Incorporated/etl-snacking-kinaxis-adf.git adf-src
+    git clone --single-branch --branch ${{ parameters.SourceBranch }} https://$(github_pat)@github.com/Krogger-Main/Krogger-Main-MARS-D30-P2D.git adf-src
   displayName: 'Clone GitHub ADF repo'
   env:
     github_pat: $(github_pat)   # 👈 Make sure this is stored as a secret variable in your pipeline
@@ -45,7 +45,7 @@ steps:
 # 2b) Clone Script_DevOps branch to fetch Trigger-Script
 - script: |
     echo "Cloning Script_DevOps branch for Triggers-Scripts"
-    git clone --single-branch --branch Scripts_DevOps https://$(github_pat)@github.com/Mars-Incorporated/etl-snacking-kinaxis-adf.git tools
+    git clone --single-branch --branch Scripts_DevOps https://$(github_pat)@github.com/Krogger-Main/Krogger-Main-MARS-D30-P2D.git tools
   displayName: 'Clone Script_DevOps branch'
   env:
     github_pat: $(github_pat)
