@@ -26,12 +26,33 @@ parameters:
 variables:
   Subscription:       '34d11d2f-1b00-494c-8051-b967e1de63f4'
   ResourceGroupName:  'MARS-D30'
-  DataFactoryName:    'marsdev-mex'
+  # Default value – will be overridden dynamically
+  DataFactoryName:    'marsdev-default'
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+
+# 0) Set DataFactoryName dynamically
+- task: PowerShell@2
+  displayName: 'Set DataFactoryName based on EnvironmentTag'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $envTag = "${{ parameters.EnvironmentTag }}"
+      if ($envTag -like "*China*") {
+        Write-Host "Setting DataFactoryName to marsdev-chn"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-chn"
+      }
+      elseif ($envTag -like "*Mexico*") {
+        Write-Host "Setting DataFactoryName to marsdev-mex"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-mex"
+      }
+      else {
+        Write-Host "Defaulting DataFactoryName to marsdev-default"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-default"
+      }
 
 # 1) Checkout pipeline repo
 - checkout: self
@@ -43,7 +64,7 @@ steps:
     git clone --single-branch --branch ${{ parameters.SourceBranch }} https://$(github_pat)@github.com/Krogger-Main/Krogger-Main-MARS-D30-P2D.git adf-src
   displayName: 'Clone GitHub ADF repo'
   env:
-    github_pat: $(github_pat)   # 👈 Make sure this is stored as a secret variable in your pipeline
+    github_pat: $(github_pat)
 
 # 2b) Clone Script_DevOps branch to fetch Trigger-Script
 - script: |
@@ -72,7 +93,6 @@ steps:
   displayName: 'Install npm packages'
   inputs:
     command: install
-    #workingDir: 'adf-src/DevOps-Code'
     workingDir: 'adf-src'
 
 # 6) Validate ADF JSON structure
@@ -80,7 +100,6 @@ steps:
   displayName: 'Validate ADF resources'
   inputs:
     command: custom
-    #workingDir: 'adf-src/DevOps-Code'
     workingDir: 'adf-src'
     customCommand: >
       run build validate
@@ -92,7 +111,6 @@ steps:
   displayName: 'Export ARM templates'
   inputs:
     command: custom
-    #workingDir: 'adf-src/DevOps-Code'
     workingDir: 'adf-src'
     customCommand: >
       run build export
@@ -112,7 +130,6 @@ steps:
 # 9) Debug exported files
 - script: |
     echo "=== Export output ==="
-    #ls -R "adf-src/DevOps-Code/ArmTemplates" || echo "No files exported!"
     ls -R "adf-src/ArmTemplates" || echo "No files exported!"
   displayName: 'List exported ARM templates'
 
@@ -120,7 +137,6 @@ steps:
 - task: CopyFiles@2
   displayName: 'Stage ARM templates for publish'
   inputs:
-    #SourceFolder: 'adf-src/DevOps-Code/ArmTemplates'
     SourceFolder: 'adf-src/ArmTemplates'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
