@@ -14,11 +14,14 @@ parameters:
   - name: EnvironmentTag
     displayName: 'Target Environment'
     type: string
-    default: 'Dev'
+    default: 'China-Dev'
     values:
-      - Dev
-      - QA
-      - Prod
+      - China-Dev
+      - China-QA
+      - Mexico-Dev
+      - Mexico-QA
+      - China-Common
+      - Mexico-Common
 
 variables:
   Subscription:       '34d11d2f-1b00-494c-8051-b967e1de63f4'
