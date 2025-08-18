@@ -20,8 +20,10 @@ parameters:
       - China-QA
       - Mexico-Dev
       - Mexico-QA
-      - China-Common
-      - Mexico-Common
+      - China-Common-QA
+      - Mexico-Common-QA
+      - China-Common-Dev
+      - Mexico-Common-Dev
 
 variables:
   Subscription:       '34d11d2f-1b00-494c-8051-b967e1de63f4'
