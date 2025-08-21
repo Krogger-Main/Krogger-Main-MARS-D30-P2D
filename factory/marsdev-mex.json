@@ -1,5 +1,6 @@
 {
 	"name": "marsdev-mex",
+  "location": "eastus",
 	"properties": {
 		"globalParameters": {
 			"gblparamcommon": {
@@ -8,5 +9,7 @@
 			}
 		}
 	},
-	"location": "eastus"
+	"identity": {
+		"type": "SystemAssigned",
+	}
 }
