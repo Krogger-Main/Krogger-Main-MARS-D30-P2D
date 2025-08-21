@@ -12,4 +12,13 @@
 	"identity": {
 		"type": "SystemAssigned",
 	}
+	"properties": {
+		"globalParameters": {
+			"gblparamwaittime": {
+				"type": "int",
+				"value": 100
+			}
+		}
+	},
+	"location": "eastus"
 }
