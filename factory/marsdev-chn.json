@@ -1,5 +1,13 @@
 {
 	"name": "marsdev-chn",
+	"properties": {
+		"globalParameters": {
+			"gblparamruntime": {
+				"type": "string",
+				"value": "ABC"
+			}
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
