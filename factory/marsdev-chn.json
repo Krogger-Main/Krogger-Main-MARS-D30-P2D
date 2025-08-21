@@ -1,9 +1,0 @@
-{
-	"name": "marsdev-chn",
-	"location": "eastus",
-	"identity": {
-		"type": "SystemAssigned",
-		"principalId": "a589b525-79cd-4cb5-b9fb-34311f786865",
-		"tenantId": "0bfae9e6-1702-4013-85ee-997e6328799d"
-	}
-}
