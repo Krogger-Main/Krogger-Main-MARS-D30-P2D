@@ -1,0 +1,9 @@
+{
+	"name": "devmars-chn",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bb3fda87-ec60-45c1-9970-47d2681adb45",
+		"tenantId": "88082f8d-75cf-482b-aa44-962c74262393"
+	}
+}
