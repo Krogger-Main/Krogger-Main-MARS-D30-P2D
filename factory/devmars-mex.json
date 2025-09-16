@@ -1,0 +1,9 @@
+{
+	"name": "devmars-mex",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a96e3cbc-b035-4b7f-b220-432c88ae5c00",
+		"tenantId": "88082f8d-75cf-482b-aa44-962c74262393"
+	}
+}
