@@ -26,10 +26,10 @@ parameters:
       - Mexico-Common-Dev
 
 variables:
-  Subscription:       '34d11d2f-1b00-494c-8051-b967e1de63f4'
+  Subscription:       '7fb4912e-2179-4a49-b6bb-17e9e812cc79'
   ResourceGroupName:  'MARS-D30'
   # Default value – will be overridden dynamically
-  DataFactoryName:    'marsdev-default'
+  DataFactoryName:    'devmars-default'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -44,16 +44,16 @@ steps:
     script: |
       $envTag = "${{ parameters.EnvironmentTag }}"
       if ($envTag -like "*China*") {
-        Write-Host "Setting DataFactoryName to marsdev-chn"
-        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-chn"
+        Write-Host "Setting DataFactoryName to devmars-chn"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]devmars-chn"
       }
       elseif ($envTag -like "*Mexico*") {
-        Write-Host "Setting DataFactoryName to marsdev-mex"
-        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-mex"
+        Write-Host "Setting DataFactoryName to devmars-mex"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]devmars-mex"
       }
       else {
-        Write-Host "Defaulting DataFactoryName to marsdev-default"
-        Write-Host "##vso[task.setvariable variable=DataFactoryName]marsdev-default"
+        Write-Host "Defaulting DataFactoryName to devmars-default"
+        Write-Host "##vso[task.setvariable variable=DataFactoryName]devmars-default"
       }
 
 # 1) Checkout pipeline repo
